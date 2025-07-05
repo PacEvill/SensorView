@@ -1,0 +1,202 @@
+/* Variáveis de cores no estilo Apple com melhor contraste */
+:root {
+  /* Cores primárias */
+  --color-primary: #0069c0; /* Azul mais escuro para melhor contraste no modo claro */
+  --color-primary-light: #2196f3;
+  --color-primary-dark: #004c8c;
+  
+  /* Cores secundárias */
+  --color-secondary: #424242; /* Cinza mais escuro para melhor contraste no modo claro */
+  --color-secondary-light: #6d6d6d;
+  --color-secondary-dark: #1b1b1b;
+  
+  /* Cores de status */
+  --color-success: #2e7d32; /* Verde mais escuro para melhor contraste */
+  --color-danger: #c62828; /* Vermelho mais escuro para melhor contraste */
+  --color-warning: #e65100; /* Laranja mais escuro para melhor contraste */
+  --color-info: #0069c0; /* Azul mais escuro para melhor contraste */
+  
+  /* Cores de fundo e texto */
+  --color-bg: #FFFFFF; /* Branco */
+  --color-text: #000000; /* Preto para máximo contraste no modo claro */
+  --color-text-secondary: #424242; /* Cinza escuro para melhor contraste no modo claro */
+  
+  /* Sombras no estilo Apple (sutis) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  /* Raios de borda no estilo Apple */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+}
+
+/* Modo escuro no estilo Apple com melhor contraste */
+[data-theme="dark"] {
+  --color-primary: #1890FF; /* Azul mais brilhante para o modo escuro */
+  --color-primary-light: #47A7FF;
+  --color-primary-dark: #0869CC;
+  
+  --color-secondary: #e0e0e0; /* Cinza mais claro para melhor contraste no modo escuro */
+  --color-secondary-light: #f5f5f5;
+  --color-secondary-dark: #aeaeae;
+  
+  /* Cores de status para modo escuro */
+  --color-success: #4caf50; /* Verde mais brilhante para o modo escuro */
+  --color-danger: #f44336; /* Vermelho mais brilhante para o modo escuro */
+  --color-warning: #ff9800; /* Laranja mais brilhante para o modo escuro */
+  --color-info: #2196f3; /* Azul mais brilhante para o modo escuro */
+  
+  --color-bg: #1C1C1E; /* Fundo escuro */
+  --color-card-bg: #2C2C2E; /* Fundo de cartão escuro */
+  --color-border: #38383A; /* Borda escura */
+  --color-text: #FFFFFF; /* Texto branco para máximo contraste no modo escuro */
+  --color-text-secondary: #e0e0e0; /* Cinza claro para melhor contraste no modo escuro */
+  
+  /* Sombras mais sutis no modo escuro */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos base */
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "-apple-system", BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased; /* Renderização de fonte Apple-like */
+  -moz-osx-font-smoothing: grayscale;
+  background-color: unset !important;
+}
+
+/* Scrollbar personalizada no estilo Apple (minimalista) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Animações suaves no estilo Apple */
+.slideIn {
+  animation: slideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.fadeIn {
+  animation: fadeIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.scaleIn {
+  animation: scaleIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Efeito de hover no estilo Apple (sutil) */
+.hover-scale {
+  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Keyframes para animações */
+@keyframes slideIn {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Utilitários responsivos */
+@media (max-width: 768px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+}
+
+/* Estilos para Kanban */
+.drag-card-ghost {
+  opacity: 0.4;
+  border-radius: var(--radius-lg) !important;
+  background-color: var(--color-bg) !important;
+}
+
+.drag-card-dragging {
+  cursor: grabbing !important;
+  background-color: var(--color-bg) !important;
+}
+
+/* Remover outline azul dos inputs em foco */
+input:focus,
+textarea:focus,
+select:focus,
+button:focus,
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: var(--color-primary) !important;
+}
+
+/* Remover borda dos checkboxes */
+.MuiCheckbox-root {
+  border: none !important;
+}
+
+/* Início do conteúdo original - não remover esta linha */
+.drag-card-dragging {
+  cursor: grabbing !important;
+}
+
+/* Estilos para Kanban */
+.drag-card-ghost {
+  opacity: 0.4;
+  border-radius: var(--radius-lg) !important;
+  background-color: var(--color-bg) !important;
+}
+
+.drag-card-dragging {
+  cursor: grabbing !important;
+  background-color: var(--color-bg) !important;
+}
