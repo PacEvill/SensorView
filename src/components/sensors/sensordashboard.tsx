@@ -36,7 +36,8 @@ import {
   LinearProgress,
   useMediaQuery,
   Skeleton,
-  AlertTitle
+  AlertTitle,
+  Divider
 } from '@mui/material';
 import useResponsive from '../../hooks/useResponsive';
 import {
@@ -59,7 +60,16 @@ import {
   Error as ErrorIcon,
   Bluetooth as BluetoothIcon,
   Wifi as WifiIcon,
-  Usb as UsbIcon
+  Usb as UsbIcon,
+  PowerOff as PowerOffIcon,
+  LightMode as LightModeIcon,
+  DarkMode as DarkModeIcon,
+  Timeline as TimelineIcon,
+  Group as GroupIcon,
+  Event as EventIcon,
+  Security as SecurityIcon,
+  BarChart as BarChartIcon,
+  AssignmentTurnedIn as AssignmentTurnedInIcon
 } from '@mui/icons-material';
 import { styled, alpha } from '@mui/material/styles';
 import { useStore } from '../../store';
@@ -75,7 +85,7 @@ import { SensorDevice, SensorType } from '../../types/sensors';
 import { useRouter } from 'next/router';
 import SensorsIcon from '@mui/icons-material/Sensors';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import SettingsIcon from '@mui/icons-material/Settings';
+import { useColorMode } from '../../hooks/useColorMode';
 
 const DashboardContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -264,33 +274,293 @@ const summaryCards = [
   },
 ];
 
+// Mock de dados de sensores
+  const sensorStats = {
+  total: 12,
+  online: 9,
+  offline: 2,
+  error: 1,
+};
+
+// Mock de alertas recentes
+const recentAlerts = [
+  { id: 1, type: 'Temperatura', message: 'Sensor 01 acima do limite!', date: '2024-06-01 14:22', status: 'crítico' },
+  { id: 2, type: 'Umidade', message: 'Sensor 03 abaixo do normal.', date: '2024-06-01 13:50', status: 'aviso' },
+  { id: 3, type: 'Bateria', message: 'Sensor 07 com bateria baixa.', date: '2024-06-01 12:10', status: 'aviso' },
+];
+
+// Mock de atividades recentes
+const recentActivities = [
+  { id: 1, activity: 'Sensor 01 conectado', time: 'há 2 min' },
+  { id: 2, activity: 'Alerta crítico resolvido', time: 'há 10 min' },
+  { id: 3, activity: 'Configuração alterada', time: 'há 30 min' },
+];
+
+// Mock de estatísticas rápidas
+const quickStats = [
+  { label: 'Média de leitura', value: '23.5°C', icon: <TrendingUpIcon color="info" /> },
+  { label: 'Pico de alerta', value: '5 alertas', icon: <WarningAmberIcon color="warning" /> },
+  { label: 'Tempo online', value: '99.8%', icon: <CheckCircleIcon color="success" /> },
+];
+
+// Mock de próximos eventos
+const upcomingEvents = [
+  { id: 1, event: 'Manutenção programada', date: '2024-06-05 09:00' },
+  { id: 2, event: 'Atualização de firmware', date: '2024-06-10 15:00' },
+];
+
+// Mock de últimos usuários logados
+const recentUsers = [
+  { id: 1, name: 'João Silva', time: 'há 5 min' },
+  { id: 2, name: 'Maria Santos', time: 'há 1h' },
+  { id: 3, name: 'Carlos Lima', time: 'há 2h' },
+];
+
+// Mock de tarefas rápidas
+const quickTasks = [
+  { id: 1, task: 'Atualizar sensores', done: false },
+  { id: 2, task: 'Verificar alertas', done: true },
+  { id: 3, task: 'Exportar dados', done: false },
+];
+
+const cardStyle = {
+  p: { xs: 2.5, sm: 4 },
+  borderRadius: 4,
+  boxShadow: 6,
+  bgcolor: 'background.paper',
+  minHeight: { xs: 180, sm: 220, md: 240 },
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  transition: 'transform 0.2s cubic-bezier(.4,0,.2,1), box-shadow 0.2s',
+  '&:hover': {
+    transform: 'translateY(-6px) scale(1.03)',
+    boxShadow: 12,
+  },
+};
+
 const SensorDashboard: React.FC = () => {
   const router = useRouter();
+  const { colorMode, toggleColorMode } = useColorMode();
+  const theme = useTheme();
+  const isSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMd = useMediaQuery(theme.breakpoints.down('md'));
+
+  // Cálculo de porcentagem de sensores online/offline
+  const onlinePercent = Math.round((sensorStats.online / sensorStats.total) * 100);
+  const offlinePercent = Math.round((sensorStats.offline / sensorStats.total) * 100);
 
   return (
-    <Box sx={{ p: { xs: 2, sm: 4 }, width: '100%', minHeight: '100vh', bgcolor: (theme) => theme.palette.background.default }}>
-      <Typography variant="h4" sx={{ fontWeight: 700, mb: 4, color: (theme) => theme.palette.text.primary }}>
+    <Box sx={{ p: { xs: 1, sm: 3, md: 4 }, width: '100%', minHeight: '100vh', bgcolor: (theme) => theme.palette.background.default }}>
+      <Typography variant="h4" sx={{ fontWeight: 900, mb: 4, color: (theme) => theme.palette.text.primary, letterSpacing: 1 }}>
         Visão Geral
-      </Typography>
-      <Grid container spacing={4}>
-        {summaryCards.map((card) => (
-          <Grid item xs={12} sm={6} md={4} key={card.title}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 3 }}>
-              {card.icon}
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 1, color: (theme) => theme.palette.text.primary }}>
-                {card.title}
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 2, color: (theme) => theme.palette.text.secondary }}>
-                {card.description}
-              </Typography>
-              <Button variant="contained" color="primary" onClick={() => router.push(card.link)}>
-                {card.button}
-              </Button>
-            </Card>
+          </Typography>
+      <Grid container spacing={3}>
+        {/* Linha 1: Cards de resumo de sensores + gráfico de barras */}
+        <Grid size={{ xs: 12, md: 8 }}>
+          <Grid container spacing={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <Card sx={{ ...cardStyle, background: 'linear-gradient(135deg, #2196f3 0%, #21cbf3 100%)', color: '#fff' }}>
+                <Tooltip title="Total de sensores cadastrados">
+                  <Badge badgeContent={sensorStats.total} color="primary" sx={{ mb: 1 }}>
+                    <SensorsIcon sx={{ fontSize: 40, color: '#fff' }} />
+                  </Badge>
+                </Tooltip>
+                <Typography variant="h5" fontWeight={700}>{sensorStats.total}</Typography>
+                <Typography variant="body2">Sensores Totais</Typography>
+              </Card>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <Card sx={{ ...cardStyle, background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', color: '#fff' }}>
+                <Tooltip title="Sensores online">
+                  <Badge badgeContent={sensorStats.online} color="success" sx={{ mb: 1 }}>
+                    <CheckCircleIcon sx={{ fontSize: 40, color: '#fff' }} />
+                  </Badge>
+                </Tooltip>
+                <Typography variant="h5" fontWeight={700}>{sensorStats.online}</Typography>
+                <Typography variant="body2">Online</Typography>
+              </Card>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <Card sx={{ ...cardStyle, background: 'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)', color: '#fff' }}>
+                <Tooltip title="Sensores offline">
+                  <Badge badgeContent={sensorStats.offline} color="warning" sx={{ mb: 1 }}>
+                    <PowerOffIcon sx={{ fontSize: 40, color: '#fff' }} />
+                  </Badge>
+                </Tooltip>
+                <Typography variant="h5" fontWeight={700}>{sensorStats.offline}</Typography>
+                <Typography variant="body2">Offline</Typography>
+              </Card>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <Card sx={{ ...cardStyle, background: 'linear-gradient(135deg, #f85032 0%, #e73827 100%)', color: '#fff' }}>
+                <Tooltip title="Sensores com erro">
+                  <Badge badgeContent={sensorStats.error} color="error" sx={{ mb: 1 }}>
+                    <ErrorIcon sx={{ fontSize: 40, color: '#fff' }} />
+              </Badge>
+                </Tooltip>
+                <Typography variant="h5" fontWeight={700}>{sensorStats.error}</Typography>
+                <Typography variant="body2">Com Erro</Typography>
+              </Card>
+            </Grid>
           </Grid>
-        ))}
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <Card sx={{ ...cardStyle, alignItems: 'center', justifyContent: 'center', minHeight: 180 }}>
+            <Box display="flex" alignItems="center" gap={1} mb={2}>
+              <BarChartIcon color="primary" />
+              <Typography variant="h6" fontWeight={700}>Sensores Online/Offline</Typography>
+            </Box>
+            <Box width="100%" mb={1}>
+              <Typography variant="body2" color="success.main">Online: {onlinePercent}%</Typography>
+              <LinearProgress variant="determinate" value={onlinePercent} sx={{ height: 10, borderRadius: 5, mb: 1, bgcolor: 'success.lighter' }} color="success" />
+              <Typography variant="body2" color="warning.main">Offline: {offlinePercent}%</Typography>
+              <LinearProgress variant="determinate" value={offlinePercent} sx={{ height: 10, borderRadius: 5, bgcolor: 'warning.lighter' }} color="warning" />
+            </Box>
+          </Card>
+        </Grid>
+
+        {/* Linha 2: Alertas, Atividades, Tarefas rápidas */}
+        <Grid size={{ xs: 12, md: 4 }}>
+          <Card sx={cardStyle}>
+            <Box display="flex" alignItems="center" mb={2} gap={1}>
+              <WarningAmberIcon color="warning" />
+              <Typography variant="h6" fontWeight={700}>Alertas Recentes</Typography>
+            </Box>
+            <Divider sx={{ mb: 2 }} />
+            <Stack spacing={1} flex={1}>
+              {recentAlerts.map(alert => (
+                <Fade in key={alert.id}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: alert.status === 'crítico' ? 'error.lighter' : 'warning.lighter', borderRadius: 2, p: 1.5 }}>
+                    <Typography variant="subtitle2" fontWeight={700} color={alert.status === 'crítico' ? 'error.main' : 'warning.main'}>
+                      {alert.type} {alert.status === 'crítico' ? <ErrorIcon fontSize="small" color="error" sx={{ ml: 0.5 }} /> : <WarningAmberIcon fontSize="small" color="warning" sx={{ ml: 0.5 }} />}
+                    </Typography>
+                    <Typography variant="body2">{alert.message}</Typography>
+                    <Typography variant="caption" color="text.secondary">{alert.date}</Typography>
+                  </Box>
+                </Fade>
+              ))}
+            </Stack>
+            <Button variant="outlined" color="warning" sx={{ mt: 2, alignSelf: 'center' }} onClick={() => router.push('/alerts')}>
+              Ver todos os alertas
+            </Button>
+          </Card>
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <Card sx={cardStyle}>
+            <Box display="flex" alignItems="center" mb={2} gap={1}>
+              <TimelineIcon color="info" />
+              <Typography variant="h6" fontWeight={700}>Atividades Recentes</Typography>
+          </Box>
+            <Divider sx={{ mb: 2 }} />
+            <Stack spacing={1} flex={1}>
+              {recentActivities.map(act => (
+                <Box key={act.id} sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1.2, borderRadius: 2, bgcolor: 'action.hover' }}>
+                  <Typography variant="body2" fontWeight={600}>{act.activity}</Typography>
+                  <Typography variant="caption" color="text.secondary">{act.time}</Typography>
+                </Box>
+              ))}
+              </Stack>
+          </Card>
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <Card sx={cardStyle}>
+            <Box display="flex" alignItems="center" mb={2} gap={1}>
+              <AssignmentTurnedInIcon color="success" />
+              <Typography variant="h6" fontWeight={700}>Tarefas Rápidas</Typography>
+            </Box>
+            <Divider sx={{ mb: 2 }} />
+            <Stack spacing={1} flex={1}>
+              {quickTasks.map(task => (
+                <Box key={task.id} sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1.2, borderRadius: 2, bgcolor: task.done ? 'success.lighter' : 'action.hover' }}>
+                  <CheckCircleIcon color={task.done ? 'success' : 'disabled'} fontSize="small" />
+                  <Typography variant="body2" fontWeight={600} sx={{ textDecoration: task.done ? 'line-through' : 'none' }}>{task.task}</Typography>
+                </Box>
+              ))}
+              </Stack>
+          </Card>
+        </Grid>
+        
+        {/* Linha 3: Estatísticas, Configurações, Eventos, Usuários */}
+        <Grid size={{ xs: 12, md: 3 }}>
+          <Card sx={cardStyle}>
+            <Box display="flex" alignItems="center" gap={1} mb={2}>
+              <TrendingUpIcon color="primary" />
+              <Typography variant="h6" fontWeight={700}>Estatísticas Rápidas</Typography>
+            </Box>
+            <Divider sx={{ mb: 2, width: '100%' }} />
+            <Stack spacing={2} width="100%">
+              {quickStats.map((stat, idx) => (
+                <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 1.2, borderRadius: 2, bgcolor: 'action.hover' }}>
+                  {stat.icon}
+                  <Typography variant="body2" fontWeight={600}>{stat.label}:</Typography>
+                  <Typography variant="body2">{stat.value}</Typography>
+                </Box>
+              ))}
+            </Stack>
+          </Card>
+        </Grid>
+        <Grid size={{ xs: 12, md: 3 }}>
+          <Card sx={cardStyle}>
+            <Box display="flex" alignItems="center" gap={1} mb={2}>
+              <SettingsIcon color="secondary" />
+              <Typography variant="h6" fontWeight={700}>Configurações Rápidas</Typography>
+            </Box>
+            <Divider sx={{ mb: 2, width: '100%' }} />
+            <Typography variant="body2" color="text.secondary" mb={2}>
+              Tema atual: <b>{colorMode === 'dark' ? 'Escuro' : 'Claro'}</b>
+            </Typography>
+            <Tooltip title="Alternar tema claro/escuro">
+              <IconButton color="primary" onClick={toggleColorMode} size="large">
+                {colorMode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+              </IconButton>
+            </Tooltip>
+            <Typography variant="caption" color="text.secondary" mt={2}>
+              Clique para alternar o tema
+            </Typography>
+            <Button variant="outlined" color="secondary" sx={{ mt: 3 }} onClick={() => router.push('/settings')}>
+              Ir para Configurações
+            </Button>
+          </Card>
+        </Grid>
+        <Grid size={{ xs: 12, md: 3 }}>
+          <Card sx={cardStyle}>
+            <Box display="flex" alignItems="center" gap={1} mb={2}>
+              <EventIcon color="info" />
+              <Typography variant="h6" fontWeight={700}>Próximos Eventos</Typography>
+            </Box>
+            <Divider sx={{ mb: 2, width: '100%' }} />
+            <Stack spacing={1} width="100%">
+              {upcomingEvents.map(ev => (
+                <Box key={ev.id} sx={{ display: 'flex', flexDirection: 'column', p: 1, borderRadius: 2, bgcolor: 'action.hover' }}>
+                  <Typography variant="body2" fontWeight={600}>{ev.event}</Typography>
+                  <Typography variant="caption" color="text.secondary">{ev.date}</Typography>
+                </Box>
+              ))}
+              </Stack>
+          </Card>
+        </Grid>
+        <Grid size={{ xs: 12, md: 3 }}>
+          <Card sx={cardStyle}>
+            <Box display="flex" alignItems="center" gap={1} mb={2}>
+              <SecurityIcon color="success" />
+              <Typography variant="h6" fontWeight={700}>Últimos Usuários</Typography>
+            </Box>
+            <Divider sx={{ mb: 2, width: '100%' }} />
+            <Stack spacing={1} width="100%">
+              {recentUsers.map(user => (
+                <Box key={user.id} sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1, borderRadius: 2, bgcolor: 'action.hover' }}>
+                  <GroupIcon color="primary" sx={{ fontSize: 20 }} />
+                  <Typography variant="body2" fontWeight={600}>{user.name}</Typography>
+                  <Typography variant="caption" color="text.secondary">{user.time}</Typography>
+                </Box>
+              ))}
+              </Stack>
+          </Card>
+        </Grid>
       </Grid>
-    </Box>
+     </Box>
   );
 };
 

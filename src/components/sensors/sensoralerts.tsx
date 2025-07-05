@@ -289,7 +289,7 @@ const SensorAlerts: React.FC<SensorAlertsProps> = ({
       )}
       
       <Collapse in={expanded}>
-        <CardContent sx={{ pt: 0 }}>
+        <CardContent sx={{ pt: 0, textAlign: 'center' }}>
           {filteredAlerts.length === 0 ? (
             <Alert severity="info" sx={{ mt: 1 }}>
               {filter === 'all' 
@@ -407,6 +407,11 @@ const SensorAlerts: React.FC<SensorAlertsProps> = ({
               </Box>
             </Box>
           )}
+          <Box sx={{ mt: 3 }}>
+            <Button variant="outlined" color="warning" sx={{ borderRadius: 2, fontWeight: 600, minWidth: 220, mx: 'auto', display: 'block' }}>
+              VER TODOS OS ALERTAS
+            </Button>
+          </Box>
         </CardContent>
       </Collapse>
     </Card>
